@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { timePeriods } from '@/data/timePeriods';
-import { interestOptions } from '@/data/interestOptions';
+import { api } from '../../api';
 
 const HistoryForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  
+  const { timePeriods, interestOptions } = api;
 
   const onSubmit = (data) => {
     setSubmitting(true);
@@ -95,7 +96,7 @@ const HistoryForm = () => {
       <div>
         <button
           type="submit"
-          className="btn-primary w-full"
+          className="btn-primary w-full cursor-pointer"
           disabled={submitting}
         >
           {submitting ? 'Exploring...' : 'Explore Historical Era'}

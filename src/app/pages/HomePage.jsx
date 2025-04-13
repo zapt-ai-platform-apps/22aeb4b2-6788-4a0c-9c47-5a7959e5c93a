@@ -1,5 +1,5 @@
 import React from 'react';
-import HistoryForm from '@/components/forms/HistoryForm';
+import HistoryForm from '@/modules/history/ui/form/HistoryForm';
 
 const HomePage = () => {
   return (

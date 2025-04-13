@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import HistoryContent from '@/components/results/HistoryContent';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import HistoryContent from '@/modules/history/ui/results/HistoryContent';
+import { ui } from '@/modules/index';
+import { history } from '@/modules/index';
 import * as Sentry from '@sentry/browser';
 
 const ResultsPage = () => {
@@ -24,29 +25,18 @@ const ResultsPage = () => {
       return;
     }
 
-    const generateHistory = async () => {
+    const fetchHistoricalContent = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        console.log('Fetching historical data for:', { region, period, interests });
-        
-        const response = await fetch('/api/generate-history', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ region, period, interests }),
+        const result = await history.generateHistoricalContent({
+          region,
+          period,
+          interests
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to generate historical content');
-        }
-
-        const data = await response.json();
-        setContent(data.content);
-        console.log('Successfully received historical content');
+        
+        setContent(result.content);
       } catch (err) {
         console.error('Error generating history:', err);
         Sentry.captureException(err);
@@ -56,19 +46,21 @@ const ResultsPage = () => {
       }
     };
 
-    generateHistory();
+    fetchHistoricalContent();
   }, [region, period, interests, navigate]);
 
   const handleBack = () => {
     navigate('/');
   };
 
+  const LoadingSpinner = ui.LoadingSpinner;
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <button 
           onClick={handleBack} 
-          className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
+          className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
         >
           <ArrowLeftIcon className="w-4 h-4 mr-1" />
           Back to Search
