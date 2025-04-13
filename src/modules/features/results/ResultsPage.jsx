@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import HistoryContent from '@/modules/history/ui/results/HistoryContent';
-import { ui } from '@/modules/index';
-import { history } from '@/modules/index';
+import { history, ui } from '@/modules/index';
 import * as Sentry from '@sentry/browser';
+
+// Lazy load the content component
+const HistoryContent = lazy(() => import('@/modules/history/ui/results/HistoryContent'));
+const LoadingSpinner = ui.LoadingSpinner;
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -30,6 +32,7 @@ const ResultsPage = () => {
         setLoading(true);
         setError(null);
         
+        // Use the public API of the history module
         const result = await history.generateHistoricalContent({
           region,
           period,
@@ -52,8 +55,6 @@ const ResultsPage = () => {
   const handleBack = () => {
     navigate('/');
   };
-
-  const LoadingSpinner = ui.LoadingSpinner;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -93,7 +94,9 @@ const ResultsPage = () => {
             <p>{error}</p>
           </div>
         ) : (
-          <HistoryContent content={content} />
+          <Suspense fallback={<div className="flex justify-center p-8"><LoadingSpinner /></div>}>
+            <HistoryContent content={content} />
+          </Suspense>
         )}
       </div>
     </div>

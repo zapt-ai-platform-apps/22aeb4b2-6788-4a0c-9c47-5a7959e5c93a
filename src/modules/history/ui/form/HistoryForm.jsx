@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api';
+import { history } from '@/modules/index';
 
 const HistoryForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   
-  const { timePeriods, interestOptions } = api;
+  const { timePeriods, interestOptions } = history;
 
   const onSubmit = (data) => {
     setSubmitting(true);

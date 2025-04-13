@@ -1,26 +1,18 @@
 import * as Sentry from '@sentry/browser';
 import { eventBus } from '../../core/events';
 import { events } from '../events';
-import { validateHistorySearchParams, validateHistoryResults } from '../validators';
 
 /**
- * Fetch historical content from the API
+ * Internal service for fetching historical content from the API
+ * Not exported directly - should only be called through the public API
  */
-export const generateHistoricalContent = async (searchParams) => {
+export const generateHistoricalContent = async (params) => {
   try {
-    // Validate the input parameters
-    const validatedParams = validateHistorySearchParams(searchParams, {
-      actionName: 'generateHistoricalContent',
-      location: 'history/internal/services.js',
-      direction: 'incoming',
-      moduleFrom: 'client',
-      moduleTo: 'history'
-    });
-    
-    console.log('Fetching historical data for:', validatedParams);
+    // Parameters are already validated at the public API boundary
+    console.log('Fetching historical data for:', params);
     
     // Publish search initiated event
-    eventBus.publish(events.HISTORY_SEARCH_INITIATED, validatedParams);
+    eventBus.publish(events.HISTORY_SEARCH_INITIATED, params);
     
     // Make API request
     const response = await fetch('/api/generate-history', {
@@ -28,7 +20,7 @@ export const generateHistoricalContent = async (searchParams) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(validatedParams),
+      body: JSON.stringify(params),
     });
 
     if (!response.ok) {
@@ -38,21 +30,12 @@ export const generateHistoricalContent = async (searchParams) => {
 
     const data = await response.json();
     
-    // Validate the response data
-    const validatedResults = validateHistoryResults(data, {
-      actionName: 'generateHistoricalContent',
-      location: 'history/internal/services.js',
-      direction: 'outgoing',
-      moduleFrom: 'history',
-      moduleTo: 'client'
-    });
-    
     console.log('Successfully received historical content');
     
     // Publish results received event
-    eventBus.publish(events.HISTORY_RESULTS_RECEIVED, validatedResults);
+    eventBus.publish(events.HISTORY_RESULTS_RECEIVED, data);
     
-    return validatedResults;
+    return data;
   } catch (error) {
     console.error('Error generating history:', error);
     Sentry.captureException(error);

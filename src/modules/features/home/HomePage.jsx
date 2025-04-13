@@ -1,5 +1,9 @@
-import React from 'react';
-import HistoryForm from '@/modules/history/ui/form/HistoryForm';
+import React, { Suspense, lazy } from 'react';
+import { history, ui } from '@/modules/index';
+
+// Lazy load the form component
+const HistoryForm = lazy(() => import('@/modules/history/ui/form/HistoryForm'));
+const LoadingSpinner = ui.LoadingSpinner;
 
 const HomePage = () => {
   return (
@@ -14,7 +18,9 @@ const HomePage = () => {
       </div>
       
       <div className="card">
-        <HistoryForm />
+        <Suspense fallback={<div className="flex justify-center p-8"><LoadingSpinner /></div>}>
+          <HistoryForm />
+        </Suspense>
       </div>
       
       <div className="mt-8 bg-indigo-50 rounded-lg p-6 shadow-inner">
