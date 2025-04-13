@@ -1,7 +1,7 @@
 {
-    "name": "reactjs-vite-tailwind-vercel",
+    "name": "eras-history-app",
     "version": "1.0.0",
-    "description": "ReactJS app with Vite, Tailwind",
+    "description": "ERAS - Interactive Historical Exploration by Era, Region, and Subject",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -10,11 +10,18 @@
         "start": "vite --host"
     },
     "dependencies": {
+        "@heroicons/react": "^2.1.1",
         "@sentry/browser": "^8.41.0",
+        "@zapt/zapt-js": "^1.0.22",
+        "openai": "^4.30.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-hook-form": "^7.51.0",
+        "react-markdown": "^9.0.1",
+        "react-router-dom": "^6.22.3"
     },
     "devDependencies": {
+        "@tailwindcss/typography": "^0.5.10",
         "@vitejs/plugin-react": "^4.3.4",
         "autoprefixer": "^10.4.20",
         "postcss": "^8.4.47",
